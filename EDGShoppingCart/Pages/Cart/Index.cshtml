@@ -1,0 +1,108 @@
+﻿@page
+@model EDGShoppingCart.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Promotional Code @Model.PromoFlag.ToString()</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center">Single Price</th>
+                            <th scope="col" class="text-right">Quantity Price</th>
+                            <th scope="col" class="text-right">Product Discount Price</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            @foreach (var cartItem in Model.Cart.Items)
+                            {
+                            <tr>
+                                <td>@cartItem.Product.Name</td>
+                                <form method="post" id="updateCartForm" asp-page-handler="UpdateCart">
+                                    <td>
+                                        <input class="form-control" type="number" id="cartItemQuantity_@cartItem.Id" value="@cartItem.Quantity" min="1" max="100" data-id="@cartItem.Id" onchange="submitUpdateCartForm(this)" />
+                                    </td>
+                                    <button type="submit" style="display: none"></button>
+                                </form>
+                                <td class="text-right" id="SinglePrice_@cartItem.Id">@(cartItem.Product.Price.ToString("C2"))</td>
+                                <td class="text-right" id="totalPrice_@cartItem.Id">$@(cartItem.Product.Price * cartItem.Quantity)</td>
+                                <td class="text-right" id="totalDiscountPrice_@cartItem.Id">$@(cartItem.Price * cartItem.Quantity)</td>
+                                <td class="text-right">
+                                    <form asp-page-handler="RemoveFromCart" method="post">
+                                        <button class="btn btn-sm btn-danger" type="submit"><i class="fa fa-trash"></i></button>
+                                        <input type="hidden" asp-for="@Model.Cart.Id" name="cartId" />
+                                        <input type="hidden" asp-for="@cartItem.Id" name="cartItemId" />
+                                    </form>
+                                </td>
+                            </tr>
+                            <input type="hidden" asp-for="Cart.Items" name="Cart.Items" value="@cartItem.Id" />
+                            }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Buy One Get On Free Discount</strong></td>
+                            <td class="text-right"><strong id="BOGOF">@Model.Cart.BuyGetFreeDiscountTotal.ToString("C2")</strong></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Spend over $ Discount</strong></td>
+                            <td class="text-right"><strong id="SpendOver">@Model.Cart.SpendOverFiftyDiscountTotal.ToString("C2")</strong></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Total</strong></td>
+                            <td class="text-right"><strong id="grandTotal">@Model.Cart.TotalPrice.ToString("C2")</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function submitUpdateCartForm(input) {
+        var cartItemId = input.getAttribute("data-id");
+        var quantity = input.value;
+
+        if (quantity < 0) {
+            quantity = 0; // Set the value to 0 if negative number is entered
+        }
+
+        var form = document.getElementById("updateCartForm");
+        var hiddenInput = document.createElement("input");
+        hiddenInput.setAttribute("type", "hidden");
+        hiddenInput.setAttribute("name", "CartItemQuantities[" + cartItemId + "]");
+        hiddenInput.setAttribute("value", quantity);
+        form.appendChild(hiddenInput);
+
+        form.submit();
+    }
+</script>

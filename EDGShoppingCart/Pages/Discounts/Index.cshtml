@@ -1,0 +1,30 @@
+﻿@page
+@model EDGShoppingCart.Pages.Discounts.IndexModel
+@{
+    ViewData["Title"] = "Discounts";
+}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Promotional Code @Model.PromoFlag.ToString()</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<h1>Discounts</h1>
+
+<form method="post">
+    <label for="promotions">Select a promotion:</label>
+    <select class="form-control" multiple asp-for="SelectedOptions">
+        @foreach (var promo in Model.Promotions)
+        {
+            <option value="@promo.BinaryFlag">@promo.Name</option>
+        }
+    </select>
+    <button type="submit">Submit</button>
+    <p>You can select multiple promotions/discounts</p>
+</form>

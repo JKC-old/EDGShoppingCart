@@ -1,0 +1,30 @@
+﻿@page
+@model EDGShoppingCart.Pages.Products.IndexModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Promotional Code @Model.PromoFlag.ToString()</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="col">
+    <div class="row">
+
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <partial name="_ProductItemMini" model="@product" />
+            </div>
+        }
+    </div>
+</div>
